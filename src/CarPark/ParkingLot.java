@@ -5,7 +5,6 @@ import java.util.Calendar;
 
 public class ParkingLot {
     private ArrayList<Car> carList = new ArrayList<Car>();
-    private EntryAutomaton entryAutomaton;
     private int nrOfCars;
     private final int maxNrOfCars = 50;
     private Calendar currentDate;
@@ -13,7 +12,6 @@ public class ParkingLot {
     public ParkingLot()
     {
         this.nrOfCars = 0;
-        entryAutomaton = new EntryAutomaton(this);
         currentDate = Calendar.getInstance();
     }
 

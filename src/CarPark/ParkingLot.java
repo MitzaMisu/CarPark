@@ -1,47 +1,66 @@
 package CarPark;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 
 public class ParkingLot {
+    private Queue<Car> entryQueue = new LinkedList<Car>();
     private ArrayList<Car> carList = new ArrayList<Car>();
-    private int nrOfCars;
     private final int maxNrOfCars = 50;
     private Calendar currentDate;
 
     public ParkingLot()
     {
-        this.nrOfCars = 0;
         currentDate = Calendar.getInstance();
     }
 
-    public boolean isFull()
-    {
-        return nrOfCars == maxNrOfCars - 1;
-    }
     public Calendar getCurrentDate()
     {
         return currentDate;
     }
-
-    private int firstFreeSpace()
+    public boolean enterParking(Car c)
     {
-        for(int i = 0; i < maxNrOfCars; i++)
+        if(carList.size() < maxNrOfCars)
         {
-            if(carList.get(i) == null)
-                return i;
+            carList.add(c);
+            System.out.println("Car " + c.getLicence() + " entered.");
+            return true;
         }
-        return - 1;
+        return false;
+    }
+    public void exitParking(int index)
+    {
+        System.out.println("Car " + carList.get(index).getLicence() + " exited the parking.");
+         carList.remove(index);
     }
 
-    public void EnterParking(Car c)
+
+    private void initialize()
     {
-        int index = firstFreeSpace();
-        if(index != -1)
+        int initialCars = 30;
+        for(int i = 0; i < initialCars; i++)
+            entryQueue.add(new Car());
+    }
+    public void run()
+    {
+        initialize();
+        Random random = new Random();
+        Car c;
+        while(true)
         {
-            carList.add(index,c);
-            nrOfCars++;
+            if(random.nextBoolean())
+            {
+                entryQueue.add(new Car());
+            }
+
+            c = entryQueue.peek();
+            if(enterParking(c))
+                entryQueue.remove(c);
+
+            if(random.nextBoolean())
+            {
+                int index = random.nextInt(carList.size());
+                exitParking(index);
+            }
         }
     }
-
 }

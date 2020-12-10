@@ -42,10 +42,12 @@ public class ParkingLot {
     }
     public void run()
     {
+        int ct = 10;
         initialize();
         Random random = new Random();
         Car c;
-        while(true)
+        for(int i = 0; i < ct; i++)
+        //while(true)
         {
             if(random.nextBoolean())
             {
@@ -53,13 +55,20 @@ public class ParkingLot {
             }
 
             c = entryQueue.peek();
-            if(enterParking(c))
-                entryQueue.remove(c);
+            if(c != null)
+            {
+                if(enterParking(c))
+                    entryQueue.remove(c);
+            }
 
             if(random.nextBoolean())
             {
-                int index = random.nextInt(carList.size());
-                exitParking(index);
+                if(carList.size() > 0)
+                {
+                    int index = random.nextInt(carList.size());
+                    exitParking(index);
+                }
+
             }
         }
     }

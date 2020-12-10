@@ -57,7 +57,7 @@ public class Car {
 
     public Car()
     {
-        licencePlate = county[rand.nextInt(county.length)] + " " + Integer.toString(rand.nextInt(100)) + " " + letters.charAt(rand.nextInt(county.length)) + letters.charAt(rand.nextInt(county.length)) + letters.charAt(rand.nextInt(county.length));
+        licencePlate = county[rand.nextInt(county.length)] + " " + Integer.toString(rand.nextInt(100)) + " " + letters.charAt(rand.nextInt(letters.length())) + letters.charAt(rand.nextInt(letters.length())) + letters.charAt(rand.nextInt(letters.length()));
         entryTicket = null;
         exitTicket = null;
     }

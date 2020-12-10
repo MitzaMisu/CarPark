@@ -3,6 +3,7 @@ package CarPark;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.run();
     }
 }

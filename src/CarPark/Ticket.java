@@ -1,14 +1,13 @@
 package CarPark;
-
-import java.util.Date;
+import java.util.Calendar;
 
 public class Ticket {
-    private Date date;
-    public Ticket(Date date)
+    private Calendar date;
+    public Ticket(Calendar date)
     {
         this.date = date;
     }
-    public Date getDate()
+    public Calendar getDate()
     {
         return date;
     }

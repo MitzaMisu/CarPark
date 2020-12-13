@@ -1,6 +1,7 @@
 package CarPark;
-
 import java.util.*;
+
+import static java.lang.Thread.*;
 
 public class ParkingLot {
     private Queue<Car> entryQueue = new LinkedList<Car>();
@@ -17,20 +18,23 @@ public class ParkingLot {
     {
         return currentDate;
     }
+
     public boolean enterParking(Car c)
     {
         if(carList.size() < maxNrOfCars)
         {
+            c.setEntryTicket(new Ticket(currentDate));
             carList.add(c);
-            System.out.println("Car " + c.getLicence() + " entered.");
+            System.out.println("Car " + c.getLicence() + " entered at time " + c.getEntryTicket().getDate().getTime());
             return true;
         }
         return false;
     }
-    public void exitParking(int index)
+    public void exitParking(Car c)
     {
-        System.out.println("Car " + carList.get(index).getLicence() + " exited the parking.");
-         carList.remove(index);
+        c.setExitTicket(new Ticket(currentDate));
+        System.out.println("Car " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getDate().getTime());
+        carList.remove(c);
     }
 
 
@@ -49,6 +53,15 @@ public class ParkingLot {
         for(int i = 0; i < ct; i++)
         //while(true)
         {
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            currentDate.add(Calendar.MINUTE,5);
+
+
             if(random.nextBoolean())
             {
                 entryQueue.add(new Car());
@@ -66,10 +79,12 @@ public class ParkingLot {
                 if(carList.size() > 0)
                 {
                     int index = random.nextInt(carList.size());
-                    exitParking(index);
+                    Car nextCar = carList.get(index);
+                    exitParking(nextCar);
                 }
 
             }
         }
+
     }
 }

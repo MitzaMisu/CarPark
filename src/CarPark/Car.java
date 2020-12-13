@@ -57,7 +57,7 @@ public class Car {
 
     public Car()
     {
-        licencePlate = county[rand.nextInt(county.length)] + " " + Integer.toString(rand.nextInt(100)) + " " + letters.charAt(rand.nextInt(letters.length())) + letters.charAt(rand.nextInt(letters.length())) + letters.charAt(rand.nextInt(letters.length()));
+        licencePlate = county[rand.nextInt(county.length)] + " " + Integer.toString(rand.nextInt(10)) + Integer.toString(rand.nextInt(10)) + " " + letters.charAt(rand.nextInt(letters.length())) + letters.charAt(rand.nextInt(letters.length())) + letters.charAt(rand.nextInt(letters.length()));
         entryTicket = null;
         exitTicket = null;
     }
@@ -74,11 +74,11 @@ public class Car {
         return exitTicket;
     }
 
-    public void receiveEntryTicket(Ticket ticket)
+    public void setEntryTicket(Ticket ticket)
     {
         this.entryTicket = ticket;
     }
-    public void receiveExitTicket(Ticket ticket)
+    public void setExitTicket(Ticket ticket)
     {
         this.exitTicket = ticket;
     }

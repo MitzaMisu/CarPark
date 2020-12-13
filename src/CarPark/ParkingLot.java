@@ -6,12 +6,14 @@ import static java.lang.Thread.*;
 public class ParkingLot {
     private Queue<Car> entryQueue = new LinkedList<Car>();
     private ArrayList<Car> carList = new ArrayList<Car>();
+    private FeeHandler feeHandler;
     private final int maxNrOfCars = 50;
     private Calendar currentDate;
 
     public ParkingLot()
     {
         currentDate = Calendar.getInstance();
+        feeHandler = new FeeHandler(currentDate);
     }
 
     public Calendar getCurrentDate()
@@ -19,21 +21,21 @@ public class ParkingLot {
         return currentDate;
     }
 
-    public boolean enterParking(Car c)
+    public boolean enterParking(Car c, Date d)
     {
         if(carList.size() < maxNrOfCars)
         {
-            c.setEntryTicket(new Ticket(currentDate));
+            c.setEntryTicket(new Ticket(d));
             carList.add(c);
-            System.out.println("Car " + c.getLicence() + " entered at time " + c.getEntryTicket().getDate().getTime());
+            System.out.println("Car " + c.getLicence() + " entered at time " + c.getEntryTicket().getTicketDate());
             return true;
         }
         return false;
     }
-    public void exitParking(Car c)
+    public void exitParking(Car c, Date d)
     {
-        c.setExitTicket(new Ticket(currentDate));
-        System.out.println("Car " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getDate().getTime());
+        c.setExitTicket(new Ticket(d));
+        System.out.println("Car " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getTicketDate() + " and paid "+ feeHandler.calculateFee(c) +" initial entrance: " + c.getEntryTicket().getTicketDate());
         carList.remove(c);
     }
 
@@ -60,18 +62,10 @@ public class ParkingLot {
             }
 
             currentDate.add(Calendar.MINUTE,5);
-
-
+            Date date = currentDate.getTime();
             if(random.nextBoolean())
             {
                 entryQueue.add(new Car());
-            }
-
-            c = entryQueue.peek();
-            if(c != null)
-            {
-                if(enterParking(c))
-                    entryQueue.remove(c);
             }
 
             if(random.nextBoolean())
@@ -80,11 +74,19 @@ public class ParkingLot {
                 {
                     int index = random.nextInt(carList.size());
                     Car nextCar = carList.get(index);
-                    exitParking(nextCar);
+                    exitParking(nextCar, date);
                 }
 
             }
-        }
 
+            c = entryQueue.peek();
+            if(c != null)
+            {
+                if(enterParking(c, date))
+                    entryQueue.remove(c);
+            }
+
+        }
+        System.out.println("Total fees collected : " + feeHandler.getTotalFeesColected());
     }
 }

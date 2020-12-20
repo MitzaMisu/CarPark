@@ -9,6 +9,7 @@ public class ParkingLot {
     private FeeHandler feeHandler;
     private final int maxNrOfCars = 50;
     private Calendar currentDate;
+    private GUI localGui;
 
     public ParkingLot()
     {
@@ -45,6 +46,7 @@ public class ParkingLot {
         int initialCars = 30;
         for(int i = 0; i < initialCars; i++)
             entryQueue.add(new Car());
+        localGui.getInstance().initialize();
     }
     public void run()
     {

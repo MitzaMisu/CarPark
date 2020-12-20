@@ -22,14 +22,13 @@ public class GUI {
         JFrame frame = new JFrame("Car Parking");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(width, height);
-
         JTabbedPane jpt = new JTabbedPane();
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
 
         ImageIcon img = new ImageIcon(getClass().getResource("Parcare.jpg"));
-        Image newImage = img.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
+        Image newImage = img.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_DEFAULT);
         img = new ImageIcon(newImage);
         JLabel labelImg = new JLabel(img);
         panel1.add(labelImg);

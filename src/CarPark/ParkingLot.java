@@ -3,18 +3,19 @@ import java.util.*;
 
 import static java.lang.Thread.*;
 
-public class ParkingLot {
+public class ParkingLot implements Runnable{
     private Queue<Car> entryQueue = new LinkedList<Car>();
     private ArrayList<Car> carList = new ArrayList<Car>();
     private FeeHandler feeHandler;
     private final int maxNrOfCars = 50;
     private Calendar currentDate;
-    private GUI localGui;
-
-    public ParkingLot()
+    private Thread t;
+    private GUI gui;
+    public ParkingLot(GUI gui)
     {
         currentDate = Calendar.getInstance();
         feeHandler = new FeeHandler(currentDate);
+        this.gui = gui;
     }
 
     public Calendar getCurrentDate()
@@ -22,13 +23,25 @@ public class ParkingLot {
         return currentDate;
     }
 
+    public void start()
+    {
+        System.out.println("Starting Simulation" );
+        if (t == null) {
+            t = new Thread (this, "Parking");
+            t.start ();
+        }
+    }
+
     public boolean enterParking(Car c, Date d)
     {
+        String history;
         if(carList.size() < maxNrOfCars)
         {
             c.setEntryTicket(new Ticket(d));
             carList.add(c);
-            System.out.println("Car " + c.getLicence() + " entered at time " + c.getEntryTicket().getTicketDate());
+            history = "Car " + c.getLicence() + " entered at time " + c.getEntryTicket().getTicketDate();
+            System.out.println(history);
+            gui.updateHistory(history);
             return true;
         }
         return false;
@@ -46,7 +59,6 @@ public class ParkingLot {
         int initialCars = 30;
         for(int i = 0; i < initialCars; i++)
             entryQueue.add(new Car());
-        localGui.getInstance().initialize();
     }
     public void run()
     {

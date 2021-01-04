@@ -48,8 +48,11 @@ public class ParkingLot implements Runnable{
     }
     public void exitParking(Car c, Date d)
     {
+        String history;
         c.setExitTicket(new Ticket(d));
-        System.out.println("Car " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getTicketDate() + " and paid "+ feeHandler.calculateFee(c) +" initial entrance: " + c.getEntryTicket().getTicketDate());
+        history = "Car " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getTicketDate() + " and paid "+ feeHandler.calculateFee(c) +" initial entrance: " + c.getEntryTicket().getTicketDate();
+        System.out.println(history);
+        gui.updateHistory(history);
         carList.remove(c);
     }
 
@@ -62,7 +65,7 @@ public class ParkingLot implements Runnable{
     }
     public void run()
     {
-        int ct = 10;
+        int ct = 100;
         initialize();
         Random random = new Random();
         Car c;

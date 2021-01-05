@@ -17,10 +17,17 @@ public class GUI implements Runnable{
     private JLabel dateLabel = new JLabel();
     private JLabel emptySpacesLabel = new JLabel();
 
+    private JLabel totalFeesLabel = new JLabel();
+    private JTextArea feesColected = new JTextArea();
+
     private final int maxNrOfCars = 72;
     private JLabel[] carLabels = new JLabel[maxNrOfCars];
     private GUI(){};
 
+    public void updateTotalFees(String s)
+    {
+        this.totalFeesLabel.setText(s);
+    }
     public void updateDatePanel(String s)
     {
         dateLabel.setText(s);
@@ -34,6 +41,10 @@ public class GUI implements Runnable{
     public void updateHistory(String s)
     {
         historyText.setText(historyText.getText() + "\n" + s);
+    }
+    public void updateFee(String s)
+    {
+        feesColected.setText(feesColected.getText() + "\n" + s);
     }
 
     public void updateInsideCars(ArrayList<Car> carList)
@@ -129,7 +140,7 @@ public class GUI implements Runnable{
         dateLabel.setFont(new Font("TimesRoman", Font.BOLD, 20));
 
         emptySpacesLabel.setOpaque(true);
-        emptySpacesLabel.setBounds(0,0,300,50);
+        emptySpacesLabel.setBounds(0,0,250,50);
         emptySpacesLabel.setFont(new Font("TimesRoman", Font.BOLD, 20));
 
         lpane.add(dateLabel,0);
@@ -185,7 +196,6 @@ public class GUI implements Runnable{
 
         //lpane.add(labelImg2, 0);
         //lpane.add(labelImg3, 0);
-
         panel1.add(lpane, BorderLayout.CENTER);
         //panel1.add(labelImg2, BorderLayout.CENTER);
         //panel1.add(labelImg, BorderLayout.CENTER);
@@ -205,6 +215,22 @@ public class GUI implements Runnable{
         box.add(scroll);
         box.add(scroll2);
         panel2.add(box);
+
+        feesColected.setRows(height/30);
+        feesColected.setColumns(width/40);
+        feesColected.setEditable(false);
+        JScrollPane scroll3 = new JScrollPane(feesColected);
+        scroll3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        totalFeesLabel.setOpaque(true);
+        totalFeesLabel.setBounds(0,0,250,50);
+        totalFeesLabel.setFont(new Font("TimesRoman", Font.BOLD, 20));
+        Box box2 = Box.createHorizontalBox();
+        box2.add(scroll3);
+        box2.add(totalFeesLabel);
+        panel3.add(box2);
+
+
 
         jpt.addTab("Parking", panel1);
         jpt.addTab("History", panel2);

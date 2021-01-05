@@ -37,6 +37,18 @@ public class Main {
                 localGUI.updateEmptySpacesLabel("  Available spaces: " + parkingLot.getEmptySpaces());
             }
         });
+        parkingLot.addObserver(new Observer() {
+            @Override
+            public void update() {
+                localGUI.updateTotalFees(parkingLot.getTotalFeeString());
+            }
+        });
+        parkingLot.addObserver(new Observer() {
+            @Override
+            public void update() {
+                localGUI.updateFee(parkingLot.getFeeString());
+            }
+        });
         parkingLot.start();
 
 

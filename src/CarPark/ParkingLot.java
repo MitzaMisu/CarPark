@@ -14,6 +14,17 @@ public class ParkingLot implements Runnable{
     private GUI gui;
     private ArrayList<Integer> freeSpaces = new ArrayList<Integer>();
     private ArrayList<Observer> observers = new ArrayList<Observer>();
+    private String totalFeeString;
+    private String feeString;
+
+    public String getFeeString()
+    {
+        return feeString;
+    }
+    public String getTotalFeeString()
+    {
+        return totalFeeString;
+    }
 
     public int getEmptySpaces()
     {
@@ -81,7 +92,9 @@ public class ParkingLot implements Runnable{
     {
         c.setExitTicket(new Ticket(d));
         history =  history + "\nCar " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getTicketDate() + " and paid "+ feeHandler.calculateFee(c) +" initial entrance: " + c.getEntryTicket().getTicketDate();
+        feeString = feeString + " " + feeHandler.calculateFee(c);
         System.out.println(history);
+        totalFeeString = "  Total Fees collected: " + feeHandler.getTotalFeesColected() + " lei";
         freeSpaces.add(c.getParkingSpace());
         c.setParkingSpace(-1);
 
@@ -99,11 +112,7 @@ public class ParkingLot implements Runnable{
     }
     public void run()
     {
-        try {
-            t.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         int ct = 100;
         initialize();
         Random random = new Random();
@@ -112,6 +121,7 @@ public class ParkingLot implements Runnable{
         while(true)
         {
             history = "";
+            feeString = "Fees collected on: " + currentDate.getTime().toString() + ": ";
             try {
                 t.sleep(1000);
             } catch (InterruptedException e) {
@@ -133,8 +143,11 @@ public class ParkingLot implements Runnable{
                     Car nextCar = carList.get(index);
                     exitParking(nextCar, date);
                 }
-
+                else
+                    feeString = feeString+'0';
             }
+            else
+                feeString = feeString + '0';
 
             c = entryQueue.peek();
             if(c != null)
@@ -144,6 +157,5 @@ public class ParkingLot implements Runnable{
             }
             notifyObservers();
         }
-        //System.out.println("Total fees collected : " + feeHandler.getTotalFeesColected());
     }
 }

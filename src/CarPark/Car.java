@@ -6,6 +6,7 @@ public class Car {
     private String licencePlate;
     private Ticket entryTicket;
     private Ticket exitTicket;
+    private int parkingSpace;
 
     private Random rand = new Random();
 
@@ -72,6 +73,14 @@ public class Car {
     public Ticket getExitTicket()
     {
         return exitTicket;
+    }
+    public void setParkingSpace(int space)
+    {
+        this.parkingSpace = space;
+    }
+    public int getParkingSpace()
+    {
+        return parkingSpace;
     }
 
     public void setEntryTicket(Ticket ticket)

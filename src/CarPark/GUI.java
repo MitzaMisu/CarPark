@@ -4,22 +4,46 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GUI implements Runnable{
     private static GUI instance;
     private Thread t;
 
-    private JTextArea historyText = new JTextArea(30,80);
+    private JTextArea historyText = new JTextArea();
+    private JTextArea insideCarsText = new JTextArea();
     private JFrame frame = new JFrame("Car Parking");
     private JLayeredPane lpane = new JLayeredPane();
+    private JLabel dateLabel = new JLabel();
+    private JLabel emptySpacesLabel = new JLabel();
 
     private final int maxNrOfCars = 72;
     private JLabel[] carLabels = new JLabel[maxNrOfCars];
     private GUI(){};
 
+    public void updateDatePanel(String s)
+    {
+        dateLabel.setText(s);
+    }
+
+    public void updateEmptySpacesLabel(String s)
+    {
+        emptySpacesLabel.setText(s);
+    }
+
     public void updateHistory(String s)
     {
         historyText.setText(historyText.getText() + "\n" + s);
+    }
+
+    public void updateInsideCars(ArrayList<Car> carList)
+    {
+        insideCarsText.setText("Cars inside the parking: \n");
+        for(int i = 0; i < carList.size();i++)
+        {
+            insideCarsText.setText(insideCarsText.getText() + "\n" + carList.get(i).getLicence());
+        }
+
     }
 
 
@@ -40,6 +64,25 @@ public class GUI implements Runnable{
         return instance;
     }
 
+    public void updateCars(ArrayList<Car> carList)
+    {
+        int auxArray[] = new int[maxNrOfCars];
+        for(int i = 0; i < maxNrOfCars;i++)
+        {
+            auxArray[i] = 0;
+        }
+        for(int i = 0; i < carList.size();i++)
+        {
+            auxArray[carList.get(i).getParkingSpace()] = 1;
+        }
+        for(int i = 0; i < maxNrOfCars;i++)
+        {
+            if(auxArray[i] == 1)
+                carLabels[i].setVisible(true);
+            else
+                carLabels[i].setVisible(false);
+        }
+    }
 
     private void drawCars()
     {
@@ -78,6 +121,20 @@ public class GUI implements Runnable{
 
             lpane.add(carLabels[i],0);
         }
+        for(int i = 0; i < maxNrOfCars; i++)
+            carLabels[i].setVisible(false);
+
+        dateLabel.setOpaque(true);
+        dateLabel.setBounds(frame.getWidth()/2 - frame.getWidth()/20,0,300,50);
+        dateLabel.setFont(new Font("TimesRoman", Font.BOLD, 20));
+
+        emptySpacesLabel.setOpaque(true);
+        emptySpacesLabel.setBounds(0,0,300,50);
+        emptySpacesLabel.setFont(new Font("TimesRoman", Font.BOLD, 20));
+
+        lpane.add(dateLabel,0);
+        lpane.add(emptySpacesLabel,0);
+
     }
 
     private void initialise()
@@ -87,6 +144,9 @@ public class GUI implements Runnable{
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
         int width = gd.getDisplayMode().getWidth();
         int height = gd.getDisplayMode().getHeight();
+
+        //int width = 900;
+        //int height = 600;
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(width, height);
@@ -129,10 +189,22 @@ public class GUI implements Runnable{
         panel1.add(lpane, BorderLayout.CENTER);
         //panel1.add(labelImg2, BorderLayout.CENTER);
         //panel1.add(labelImg, BorderLayout.CENTER);
+        historyText.setRows(height/30);
+        historyText.setColumns(width/25);
         historyText.setEditable(false);
         JScrollPane scroll = new JScrollPane(historyText);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        panel2.add(scroll);
+
+        insideCarsText.setRows(height/30);
+        insideCarsText.setColumns(width/40);
+        insideCarsText.setEditable(false);
+        JScrollPane scroll2 = new JScrollPane(insideCarsText);
+        scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        Box box = Box.createHorizontalBox();
+        box.add(scroll);
+        box.add(scroll2);
+        panel2.add(box);
 
         jpt.addTab("Parking", panel1);
         jpt.addTab("History", panel2);

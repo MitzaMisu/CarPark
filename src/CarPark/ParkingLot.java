@@ -4,13 +4,35 @@ import java.util.*;
 import static java.lang.Thread.*;
 
 public class ParkingLot implements Runnable{
+    public String history;
     private Queue<Car> entryQueue = new LinkedList<Car>();
     private ArrayList<Car> carList = new ArrayList<Car>();
     private FeeHandler feeHandler;
-    private final int maxNrOfCars = 50;
+    private final int maxNrOfCars = 72;
     private Calendar currentDate;
     private Thread t;
     private GUI gui;
+    private ArrayList<Integer> freeSpaces = new ArrayList<Integer>();
+    private ArrayList<Observer> observers = new ArrayList<Observer>();
+
+    public int getEmptySpaces()
+    {
+        return maxNrOfCars - carList.size();
+    }
+    public String getHistory()
+    {
+        return history;
+    }
+    public void addObserver(Observer obv)
+    {
+        observers.add(obv);
+    }
+
+    public void notifyObservers()
+    {
+        observers.forEach(observer -> observer.update());
+    }
+
     public ParkingLot(GUI gui)
     {
         currentDate = Calendar.getInstance();
@@ -31,49 +53,67 @@ public class ParkingLot implements Runnable{
             t.start ();
         }
     }
+    public ArrayList<Car> getCars()
+    {
+        return carList;
+    }
 
     public boolean enterParking(Car c, Date d)
     {
-        String history;
+        int aux;
+        Random random = new Random();
         if(carList.size() < maxNrOfCars)
         {
             c.setEntryTicket(new Ticket(d));
             carList.add(c);
-            history = "Car " + c.getLicence() + " entered at time " + c.getEntryTicket().getTicketDate();
+
+            aux = random.nextInt(freeSpaces.size());
+            c.setParkingSpace(freeSpaces.get(aux));
+            freeSpaces.remove(aux);
+
+            history = history + " \nCar " + c.getLicence() + " entered at time " + c.getEntryTicket().getTicketDate();
             System.out.println(history);
-            gui.updateHistory(history);
             return true;
         }
         return false;
     }
     public void exitParking(Car c, Date d)
     {
-        String history;
         c.setExitTicket(new Ticket(d));
-        history = "Car " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getTicketDate() + " and paid "+ feeHandler.calculateFee(c) +" initial entrance: " + c.getEntryTicket().getTicketDate();
+        history =  history + "\nCar " + c.getLicence() + " exited the parking at time " + c.getExitTicket().getTicketDate() + " and paid "+ feeHandler.calculateFee(c) +" initial entrance: " + c.getEntryTicket().getTicketDate();
         System.out.println(history);
-        gui.updateHistory(history);
+        freeSpaces.add(c.getParkingSpace());
+        c.setParkingSpace(-1);
+
         carList.remove(c);
     }
 
 
     private void initialize()
     {
-        int initialCars = 30;
+        for(int i = 0; i < maxNrOfCars; i++)
+            freeSpaces.add(Integer.valueOf(i));
+        int initialCars = 10;
         for(int i = 0; i < initialCars; i++)
             entryQueue.add(new Car());
     }
     public void run()
     {
+        try {
+            t.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         int ct = 100;
         initialize();
         Random random = new Random();
         Car c;
-        for(int i = 0; i < ct; i++)
-        //while(true)
+        //for(int i = 0; i < ct; i++)
+        while(true)
         {
+            history = "";
             try {
-                sleep(1000);
+                t.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -102,8 +142,8 @@ public class ParkingLot implements Runnable{
                 if(enterParking(c, date))
                     entryQueue.remove(c);
             }
-
+            notifyObservers();
         }
-        System.out.println("Total fees collected : " + feeHandler.getTotalFeesColected());
+        //System.out.println("Total fees collected : " + feeHandler.getTotalFeesColected());
     }
 }

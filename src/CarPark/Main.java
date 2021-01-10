@@ -10,7 +10,7 @@ public class Main {
         parkingLot.addObserver(new Observer() {
             @Override
             public void update() {
-                localGUI.updateCars(parkingLot.getCars());
+                localGUI.updateCars();
             }
         });
         parkingLot.addObserver(new Observer() {

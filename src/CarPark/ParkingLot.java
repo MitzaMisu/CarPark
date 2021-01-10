@@ -1,4 +1,7 @@
 package CarPark;
+import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.Thread.*;
@@ -46,7 +49,6 @@ public class ParkingLot implements Runnable{
 
     public ParkingLot(GUI gui)
     {
-        currentDate = Calendar.getInstance();
         feeHandler = new FeeHandler(currentDate);
         this.gui = gui;
     }
@@ -109,6 +111,53 @@ public class ParkingLot implements Runnable{
         int initialCars = 10;
         for(int i = 0; i < initialCars; i++)
             entryQueue.add(new Car());
+
+        String[] info;
+        InputStream is = null;
+        try {
+            is = new FileInputStream("input.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+
+        String line = null;
+        try {
+            line = buf.readLine();
+            if(line != null)
+            {
+                try {
+                    currentDate = Calendar.getInstance();
+                    currentDate.setTime(new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy").parse(line));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+                currentDate = Calendar.getInstance();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        do {
+            try {
+                line = buf.readLine();
+                if(line != null)
+                {
+                    carList.add(new Car(line));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        while (line != null);
+        for(int i = 0; i < carList.size();i++)
+        {
+            freeSpaces.remove(Integer.valueOf(carList.get(i).getParkingSpace()));
+        }
+
     }
     public void run()
     {
@@ -155,6 +204,8 @@ public class ParkingLot implements Runnable{
                 if(enterParking(c, date))
                     entryQueue.remove(c);
             }
+            gui.sendCarList(carList);
+            gui.sendCurrDate(date);
             notifyObservers();
         }
     }

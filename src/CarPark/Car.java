@@ -1,5 +1,7 @@
 package CarPark;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 public class Car {
@@ -55,6 +57,17 @@ public class Car {
     };
     private final String letters= "ABCDEFGHIJKLMNOPQRSTUXYZ";
 
+    public Car(String input)
+    {
+        String[] arrOfStr = input.split(";", 3);
+        this.licencePlate = arrOfStr[0];
+        try {
+            this.setEntryTicket(new Ticket(new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy").parse(arrOfStr[1]) ));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        this.setParkingSpace(Integer.parseInt(arrOfStr[2])  );
+    }
 
     public Car()
     {
@@ -92,4 +105,10 @@ public class Car {
         this.exitTicket = ticket;
     }
 
+
+    public String toString()
+    {
+        String result = licencePlate + ";" + entryTicket.getTicketDate().toString()  + ";" + parkingSpace;
+        return result;
+    }
 }

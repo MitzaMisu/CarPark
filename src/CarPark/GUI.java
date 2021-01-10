@@ -3,13 +3,21 @@ package CarPark;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Image;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class GUI implements Runnable{
     private static GUI instance;
     private Thread t;
-
+    private Date currDate;
+    private ArrayList<Car> carList = new ArrayList<Car>();
     private JTextArea historyText = new JTextArea();
     private JTextArea insideCarsText = new JTextArea();
     private JFrame frame = new JFrame("Car Parking");
@@ -22,6 +30,7 @@ public class GUI implements Runnable{
 
     private final int maxNrOfCars = 72;
     private JLabel[] carLabels = new JLabel[maxNrOfCars];
+    private JLabel[] carLicense = new JLabel[maxNrOfCars];
     private GUI(){};
 
     public void updateTotalFees(String s)
@@ -56,7 +65,30 @@ public class GUI implements Runnable{
         }
 
     }
+    public void sendCarList(ArrayList<Car> carList)
+    {
+        this.carList = carList;
+    }
+    public void sendCurrDate(Date currDate)
+    {
+        this.currDate = currDate;
+    }
 
+    public void saveCars()
+    {
+
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter("input.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PrintWriter printWriter = new PrintWriter(fileWriter);
+        printWriter.print(currDate.toString() + "\n") ;
+        for(int i = 0; i < carList.size();i++)
+            printWriter.print(carList.get(i).toString() + "\n");
+        printWriter.close();
+    }
 
     public void start()
     {
@@ -75,7 +107,7 @@ public class GUI implements Runnable{
         return instance;
     }
 
-    public void updateCars(ArrayList<Car> carList)
+    public void updateCars()
     {
         int auxArray[] = new int[maxNrOfCars];
         for(int i = 0; i < maxNrOfCars;i++)
@@ -85,13 +117,21 @@ public class GUI implements Runnable{
         for(int i = 0; i < carList.size();i++)
         {
             auxArray[carList.get(i).getParkingSpace()] = 1;
+            carLicense[carList.get(i).getParkingSpace()].setText(carList.get(i).getLicence());
         }
         for(int i = 0; i < maxNrOfCars;i++)
         {
             if(auxArray[i] == 1)
+            {
                 carLabels[i].setVisible(true);
+            }
+
             else
+            {
                 carLabels[i].setVisible(false);
+                carLicense[i].setText("");
+            }
+
         }
     }
 
@@ -112,6 +152,9 @@ public class GUI implements Runnable{
 
             carLabels[i] = new JLabel(img2);
             carLabels[i].setBounds(x,y,imageWidth, imageHeight);
+            carLicense[i] = new JLabel("test");
+            carLicense[i].setBounds(x + imageWidth / 10,y,imageWidth, imageHeight);
+            carLicense[i].setForeground(Color.white);
             if(i == 8 || i == 26 || i == 44 || i == 62)
                 x+= frame.getWidth() / 20 * 2;
 
@@ -131,6 +174,7 @@ public class GUI implements Runnable{
 
 
             lpane.add(carLabels[i],0);
+            lpane.add(carLicense[i],0);
         }
         for(int i = 0; i < maxNrOfCars; i++)
             carLabels[i].setVisible(false);
@@ -150,6 +194,12 @@ public class GUI implements Runnable{
 
     private void initialise()
     {
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                saveCars();
+                System.exit(0);
+            }
+        });
 
 
         GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
@@ -199,13 +249,13 @@ public class GUI implements Runnable{
         panel1.add(lpane, BorderLayout.CENTER);
         //panel1.add(labelImg2, BorderLayout.CENTER);
         //panel1.add(labelImg, BorderLayout.CENTER);
-        historyText.setRows(height/30);
+        historyText.setRows(height/18);
         historyText.setColumns(width/25);
         historyText.setEditable(false);
         JScrollPane scroll = new JScrollPane(historyText);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        insideCarsText.setRows(height/30);
+        insideCarsText.setRows(height/18);
         insideCarsText.setColumns(width/40);
         insideCarsText.setEditable(false);
         JScrollPane scroll2 = new JScrollPane(insideCarsText);
@@ -216,7 +266,7 @@ public class GUI implements Runnable{
         box.add(scroll2);
         panel2.add(box);
 
-        feesColected.setRows(height/30);
+        feesColected.setRows(height/18);
         feesColected.setColumns(width/40);
         feesColected.setEditable(false);
         JScrollPane scroll3 = new JScrollPane(feesColected);

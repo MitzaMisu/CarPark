@@ -252,12 +252,14 @@ public class GUI implements Runnable{
         historyText.setRows(height/18);
         historyText.setColumns(width/25);
         historyText.setEditable(false);
+        historyText.setFont(new Font("TimesRoman", Font.PLAIN, 16));
         JScrollPane scroll = new JScrollPane(historyText);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         insideCarsText.setRows(height/18);
         insideCarsText.setColumns(width/40);
         insideCarsText.setEditable(false);
+        insideCarsText.setFont(new Font("TimesRoman", Font.ITALIC, 18));
         JScrollPane scroll2 = new JScrollPane(insideCarsText);
         scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -269,6 +271,7 @@ public class GUI implements Runnable{
         feesColected.setRows(height/18);
         feesColected.setColumns(width/40);
         feesColected.setEditable(false);
+        feesColected.setFont(new Font("TimesRoman", Font.PLAIN, 16));
         JScrollPane scroll3 = new JScrollPane(feesColected);
         scroll3.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 

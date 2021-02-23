@@ -1,5 +1,7 @@
-package CarPark;
+//Car parking Simulation                     made by Fleser Mihai
 
+
+package CarPark;
 public class Main {
 
     public static void main(String[] args) {
